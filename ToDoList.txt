@@ -1,0 +1,16 @@
+Corpus:
+	IT Bank Corpus
+Supervised Learner:
+	Naive Bayes
+	SVM
+	K-Nearest Neighbors
+Features:
+	surrounding POS tags
+		word before and word after
+	actual words
+		word before and word after
+	word position
+	sentence length
+	relative pronouns
+Feature Extraction:
+	dictvectorizor
