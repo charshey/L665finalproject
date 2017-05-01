@@ -1,11 +1,14 @@
+#!/home/clare/anaconda3/bin/python3
+
 import os
+import csv
 from sklearn import svm
 import numpy as np
 import nltk
 import re
 
 
-path = "C:/Users/ihovl/Documents/applied ml/It-Bank/It-Bank/ACLData/"
+path = "It-Bank/ACLData"
 
 
 def read_in_ACLData(path): #you can change the path, but this will read in all files in a folder. It returns 3 lists, one for each column
@@ -13,15 +16,14 @@ def read_in_ACLData(path): #you can change the path, but this will read in all f
     positions = []
     sentences = []
     for filename in os.listdir(path):
-        f = open(path+filename)
-        line = f.readline()
-        while line:
-            rline = line.rstrip()
-            splitted = rline.split("\t")
-            answers.append(splitted[0])
-            positions.append(splitted[1])
-            sentences.append(splitted[2])
-            line = f.readline()
+        with open(path+"/"+filename) as data:
+            text =  csv.reader(data,delimiter="\t")
+            print("text:",text)
+            for row in text:
+                answers.append(row[0])
+                positions.append(row[1])
+                sentences.append(row[2])
+    print(answers, positions, sentences)
     return answers, positions, sentences
     
     
@@ -49,6 +51,7 @@ def extract_wrd_bigrams(sentences, positions):
         wrd_array[j][all_before_words.index(sentsplit[posn-1])] = 1
         wrd_array[j][(len(all_before_words)+all_after_words.index(sentsplit[posn+1]))] = 1
         j += 1
+    print(len(wrd_array))
     return wrd_array
         
     
@@ -61,13 +64,13 @@ def extract_wrd_bigrams(sentences, positions):
 answers, positions, sentences = read_in_ACLData(path)
 wrd_array = extract_wrd_bigrams(sentences, positions) #this is very sparse
 #print(wrd_bg_ft[0])
-#print(len(answers)) #these are just little check-ins. change as needed
+print(len(answers)) #these are just little check-ins. change as needed
 #print(len(positions))
 #print(len(sentences))
 
 Y = np.array(answers) #This np array is now ready to be used in the classifier. That's all we need to do to it
 clf = svm.SVC()
-clf.fit(wrd_array[:1700], Y[:1700])
-print(clf.predict(wrd_array[1700:]))
+#clf.fit(wrd_array[:1700], Y[:1700])
+#print(clf.predict(wrd_array[1700:]))
 
 
