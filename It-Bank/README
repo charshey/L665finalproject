@@ -1,0 +1,84 @@
+It-Bank
+
+Version 1.0
+April 1, 2008
+
+An online repository for annotated instances of the pronoun "it"
+
+If you use this data in your work, please cite as:
+
+Shane Bergsma, Dekang Lin and Randy Goebel, Distributional
+Identification of Non-Referential Pronouns, In ACL-HLT 2008, Columbus,
+Ohio, June 16-18, 2008.
+
+Contents:
+
+1) ACLData/
+2) DevData/
+3) Format of It-Bank Data
+
+
+
+1) ACLData/
+
+- contains the instances used for the evaluation in the paper (Along
+with it-instances from the MUC7 coreference corpus, available from the
+LDC).
+
+Source:
+
+ACLData comes from 1020 instances in a collection of Science News
+articles (from 1995-2000), downloaded from the Science News website,
+plus 709 instances in the WSJ portion of the DARPA TIPSTER Project
+(Harman, 1992), and 279 instances in the English portion of the
+Europarl Corpus (Koehn, 2005).  Please see the paper for full citation
+details.
+
+
+
+2) DevData/
+
+- contains it-instances taken from previously annotated coreference
+corpora at the University of Alberta.  Used as development data for
+the system described in the paper.
+
+Source: 
+
+ancTrain.rand and ancTest.rand come from the American National Corpus.
+The train/test split corresponds to the split used for the full set of
+pronoun annotations done on this corpus.  For further details on these
+annotations please see: http://www.cs.ualberta.ca/~bergsma/CorefTags/
+and the paper: Shane Bergsma, Automatic Acquisition of Gender
+Information for Anaphora Resolution, In Canadian AI 2005, (LNCS,3501,
+© Springer Verlag), Victoria, BC, May 9-11, 2005, pages 342-353.
+
+aqtDev.rand and aqtTest.rand were taken pronoun resolutions made on
+the AQUAINT corpus.  The full set of these resolutions have not yet
+been made available to the public.  For more details on the original
+use of these annotations, please see: Colin Cherry and Shane Bergsma,
+An Expectation Maximization Approach to Pronoun Resolution, In CoNLL
+2005, Ann Arbor, Michigan, June 29-30, 2005, pages 88-95.
+
+
+
+3) Format of It-Bank Data
+
+Each example is a tab-separated triple: a label, a position, and a sentence:
+
+1	1	 It is not expected to cause him to miss any games .
+1	10	 More frequent droughts would make water even scarcer than it is today .
+0	7	 She adds , however , that it 's impossible to be certain the cells were motor neurons .
+
+The sentence is a space-separated list of tokens corresponding to one
+sentence.  All sentences were automatically tokenized and segmented
+using Dekang Lin's Language and Text Analysis Tools
+(D. Lin. 2001. LaTaT: Language and Text Analysis Tools. In Proceedings
+of Human Language Technology Conference 2001.  pp.222--227. 2001).
+Note that this automatic processing does occasionally introduce errors
+in tokenization or segmentation.
+
+The second component of the triple, the position, identifies which
+token in the sentence corresponds to the label.  The position always
+corresponds to an "it" token.  The position number is needed because
+sentences may have more than one occurrence of the word it.
+
