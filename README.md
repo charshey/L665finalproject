@@ -1,2 +1,2 @@
-# L665finalproject
-Final project for L665
+# L665 final project
+Indiana University, Spring 2017
