@@ -20,7 +20,6 @@ def read_in_ACLData(path): #you can change the path, but this will read in all f
     for filename in os.listdir(path):
         with open(path+"/"+filename) as data:
             text =  csv.reader(data,delimiter="\t")
-            print("text:",text)
             for row in text:
                 answers.append(row[0])
                 positions.append(row[1])
@@ -41,37 +40,42 @@ def extract_wrd_bigrams(sentences, positions):
         if posn < len(sent) and sent[(posn)] not in all_after_words:
             all_after_words.append(sent[(posn)])
         i += 1
-    wrd_array = np.zeros([len(sentences), (len(all_after_words)+len(all_before_words))])
+    return all_before_words,all_after_words
 
+
+def get_feat_vect(all_before_words,all_after_words,sentences,positions):
     j = 0
+    wrd_array = np.zeros([len(sentences), (len(all_after_words)+len(all_before_words))])
     while j < len(sentences): #this while loop finds all the different words before and after eacn instance of "it"
-        posn = int(positions[j]) - 1
+        posn = int(positions[j])
         sent = nltk.word_tokenize(sentences[j])
         for k in range(len(sent)):
             for word in all_before_words:
-                if posn > 0 and word == sent[posn-1]:
+                if posn > 1 and word == sent[posn-2]:
                     wrd_array[j][k] = 1
             for word in all_after_words:
-                if posn < len(sent) -2 and word == sent[posn+1]:
+                if posn < len(sent) -1 and word == sent[posn]:
                     wrd_array[j][k] = 1
         j += 1
     return wrd_array
            
-answers, positions, sentences = read_in_ACLData(path)
-wrd_array = extract_wrd_bigrams(sentences, positions) #this is very sparse
+answers, positions, sentences = read_in_ACLData(path) #self-explanatory
+before_words,after_words = extract_wrd_bigrams(sentences, positions) #get bag (bags) of words
+feature_vector = get_feat_vect(before_words,after_words,sentences,positions) #use bag of words and sentences to get feature vectors
 #print(wrd_bg_ft[0])
 #print(len(answers)) #these are just little check-ins. change as needed
 #print(len(positions))
 #print(len(sentences))
 
 #extracting testing data
-testanswers,testpositions,testsentences = read_in_ACLData(path)
-test_array = extract_wrd_bigrams(testsentences,testpositions)
+testanswers,testpositions,testsentences = read_in_ACLData(testpath)
+#don't need to get Bag Of Words, we're using the training bag against the test sentences
+test_feature_vector = get_feat_vect(before_words,after_words,testsentences,testpositions) #use training bag of words and test sentences to get feature vectors
 Z = np.array(testanswers)
 
 Y = np.array(answers) #This np array is now ready to be used in the classifier. That's all we need to do to it
 clf = svm.SVC()
-clf.fit(wrd_array, Y)
-print(clf.score(test_array,Z))
+clf.fit(feature_vector, Y)
+print(clf.score(test_feature_vector,Z))
 
 
