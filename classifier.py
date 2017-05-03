@@ -44,6 +44,17 @@ def extract_wrd_bigrams(sentences, positions):
         i += 1
     return all_before_words,all_after_words
 
+def extract_POS_bigrams(sentences, positions):
+    i = 0
+    all_before_POS = []
+    all_after_POS = []
+    while i < len(sentences):
+        sent_tok = nltk.word_tokenize(sentences[i])
+        sent_POS = nltk.pos_tag(sent_tok)
+        [nltk.tag.str2tuple(t) for t in sent.split()]
+
+
+
 
 def get_feat_vect(all_before_words, all_after_words, sentences, positions):
     j = 0
