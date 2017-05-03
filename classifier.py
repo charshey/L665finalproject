@@ -5,11 +5,11 @@ import csv
 from sklearn import svm
 import numpy as np
 import nltk
-import re
+from nltk.stem import WordNetLemmatizer
 
-
+lemmatizer = WordNetLemmatizer()
 path = "It-Bank/ACLData"
-nltk.download('punkt')
+#nltk.download('punkt')
 
 testpath = "It-Bank/DevData"
 
@@ -19,7 +19,7 @@ def read_in_ACLData(path): #you can change the path, but this will read in all f
     sentences = []
     for filename in os.listdir(path):
         with open(path+"/"+filename) as data:
-            text =  csv.reader(data,delimiter="\t")
+            text = csv.reader(data, delimiter="\t")
             for row in text:
                 answers.append(row[0])
                 positions.append(row[1])
@@ -35,15 +35,17 @@ def extract_wrd_bigrams(sentences, positions):
     while i < len(sentences): #this while loop finds all the different words before and after eacn instance of "it"
         posn = int(positions[i])
         sent = nltk.word_tokenize(sentences[i])
-        if posn > 1 and sent[(posn-2)] not in all_before_words: 
-            all_before_words.append(sent[(posn-2)])
+        if posn > 1 and sent[(posn-2)] not in all_before_words:
+            word_before = lemmatizer.lemmatize(sent[posn-2])
+            all_before_words.append(word_before)
         if posn < len(sent) and sent[(posn)] not in all_after_words:
-            all_after_words.append(sent[(posn)])
+            word_after = lemmatizer.lemmatize(sent[posn])
+            all_after_words.append(word_after)
         i += 1
     return all_before_words,all_after_words
 
 
-def get_feat_vect(all_before_words,all_after_words,sentences,positions):
+def get_feat_vect(all_before_words, all_after_words, sentences, positions):
     j = 0
     wrd_array = np.zeros([len(sentences), (len(all_after_words)+len(all_before_words))])
     while j < len(sentences): #this while loop finds all the different words before and after eacn instance of "it"
@@ -76,6 +78,6 @@ Z = np.array(testanswers)
 Y = np.array(answers) #This np array is now ready to be used in the classifier. That's all we need to do to it
 clf = svm.SVC()
 clf.fit(feature_vector, Y)
-print(clf.score(test_feature_vector,Z))
+print(clf.score(test_feature_vector, Z))
 
 
