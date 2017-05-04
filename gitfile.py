@@ -68,7 +68,7 @@ def extract_POS_bigrams(sentences, positions):
 
 def get_feat_vect(all_before_words, all_after_words, before_POS, after_POS, sentences, positions):
     j = 0
-    wrd_array = np.zeros([len(sentences), (len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS)+1)])
+    wrd_array = np.zeros([len(sentences), (len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS)+2)])
     print(wrd_array.shape)
     while j < len(sentences):  # this while loop finds all the different words before and after each instance of "it"
         posn = int(positions[j])-1
@@ -84,12 +84,15 @@ def get_feat_vect(all_before_words, all_after_words, before_POS, after_POS, sent
         wrd_array[j][(len(all_after_words)+len(all_after_words)+before_POS.index(pos_bf))] = 1
         wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+after_POS.index(pos_af))]=1
         wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))] = posn
+        wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))+1] = len(sent)
+
 		
 		
         j += 1
     return wrd_array
            
 answers, positions, sentences = read_in_ACLData(path) # self-explanatory
+#print(len(answers))
 before_words,after_words = extract_wrd_bigrams(sentences, positions) # get bag (bags) of words
 before_POS, after_POS = extract_POS_bigrams(sentences, positions)
 #print(before_words)
