@@ -4,6 +4,8 @@ import os
 import csv
 import string
 from sklearn import svm
+from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import BernoulliNB
 from sklearn.metrics import precision_score, recall_score, f1_score
 import numpy as np
 import nltk
@@ -160,14 +162,27 @@ feature_vector = get_feat_vect(before_words, after_words, two_before, two_after,
 Y = np.array(answers)  # This np array is now ready to be used in the classifier. That's all we need to do to it
 clf = svm.LinearSVC(C=1)
 clf.fit(feature_vector[:1700], Y[:1700])
-print(clf.predict(feature_vector[1700:]))
+gnb = GaussianNB()
+gnb.fit(feature_vector[:1700], Y[:1700])
+bnb = BernoulliNB()
+bnb.fit(feature_vector[:1700], Y[:1700])
 
-
-# Scoring
-print(clf.score(feature_vector[1700:], Y[1700:]))
-print(precision_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
-print(recall_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
-print(f1_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
-
+print("SVM Scores")
+print("Accuracy: ", clf.score(feature_vector[1700:], Y[1700:]))
+print("Precision: ", precision_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
+print("Recall: ", recall_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
+print("F-Score: ", f1_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
+print('\n')
+print("Gaussian Naive Bayes Scores")
+print("Accuracy: ", gnb.score(feature_vector[1700:], Y[1700:]))
+print("Precision: ", precision_score(gnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
+print("Recall: ", recall_score(gnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
+print("F-Score: ", f1_score(gnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
+print('\n')
+print("Bernoulli Naive Bayes Scores")
+print("Accuracy: ", bnb.score(feature_vector[1700:], Y[1700:]))
+print("Precision: ", precision_score(bnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
+print("Recall: ", recall_score(bnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
+print("F-Score: ", f1_score(bnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
 
 
