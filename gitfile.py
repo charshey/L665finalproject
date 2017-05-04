@@ -90,10 +90,14 @@ def get_feat_vect(all_before_words, all_after_words, before_POS, after_POS, sent
         wrd_af = sent[posn+1]
         pos_bf = sent_POS[posn-1][1]
         pos_af = sent_POS[posn+1][1]
-        wrd_array[j][all_before_words.index(wrd_bf)] = 1
-        wrd_array[j][(len(all_before_words)+all_after_words.index(wrd_af))] = 1
-        wrd_array[j][(len(all_before_words)+len(all_after_words)+before_POS.index(pos_bf))] = 1
-        wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+after_POS.index(pos_af))] = 1
+        if wrd_bf in all_before_words:
+            wrd_array[j][all_before_words.index(wrd_bf)] = 1
+        if wrd_af in all_after_words:
+            wrd_array[j][(len(all_before_words)+all_after_words.index(wrd_af))] = 1
+        if pos_bf in before_POS:
+            wrd_array[j][(len(all_before_words)+len(all_after_words)+before_POS.index(pos_bf))] = 1
+        if pos_af in after_POS:
+            wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+after_POS.index(pos_af))] = 1
         wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))] = posn
         wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))+1] = len(sent)
         for k in range(len(cues)):
