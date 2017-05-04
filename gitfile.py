@@ -60,8 +60,11 @@ def extract_POS_bigrams(sentences, positions):
     all_after_POS = []
     while i < len(sentences):
         posn = int(positions[i])
-        sent_tok = nltk.word_tokenize(sentences[i])
-        sent_POS = nltk.pos_tag(sent_tok)
+        sent = sentences[i].lower()
+        sent = sent.split(" ")
+        sent[0] = 'BEGIN'
+        sent.append('END')
+        sent_POS = nltk.pos_tag(sent)
         if posn > 1 and sent_POS[(posn-1)][1] not in all_before_POS:
             all_before_POS.append(sent_POS[(posn-1)][1])
         if posn < len(sent_POS)-1 and sent_POS[(posn+1)][1] not in all_after_POS:
@@ -77,7 +80,10 @@ def get_feat_vect(all_before_words, all_after_words, before_POS, after_POS, sent
     print(wrd_array.shape)
     while j < len(sentences):  # this while loop finds all the different words before and after each instance of "it"
         posn = int(positions[j])
-        sent = nltk.word_tokenize(sentences[j])
+        sent = sentences[j].lower()
+        sent = sent.split(" ")
+        sent[0] = 'BEGIN'
+        sent.append('END')
         sent_POS = nltk.pos_tag(sent)
         print("posn-2: " + sent[posn-2] + " posn-1: " + sent[posn-1] + " posn: " + sent[posn] + " posn+1: " + sent[posn+1]) #I put this here just in case
         wrd_bf = sent[posn-1]
