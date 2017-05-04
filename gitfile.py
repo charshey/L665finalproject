@@ -11,7 +11,7 @@ from nltk.stem import WordNetLemmatizer
 
 lemmatizer = WordNetLemmatizer()
 path = "It-Bank/ACLData"
-nltk.download('punkt','averaged_perceptron_tagger')
+#nltk.download('punkt','averaged_perceptron_tagger')
 
 testpath = "It-Bank/DevData"
 
@@ -85,7 +85,7 @@ def get_feat_vect(all_before_words, all_after_words, before_POS, after_POS, sent
         sent[0] = 'BEGIN'
         sent.append('END')
         sent_POS = nltk.pos_tag(sent)
-        print("posn-2: " + sent[posn-2] + " posn-1: " + sent[posn-1] + " posn: " + sent[posn] + " posn+1: " + sent[posn+1]) #I put this here just in case
+        #print("posn-2: " + sent[posn-2] + " posn-1: " + sent[posn-1] + " posn: " + sent[posn] + " posn+1: " + sent[posn+1]) #I put this here just in case
         wrd_bf = sent[posn-1]
         wrd_af = sent[posn+1]
         pos_bf = sent_POS[posn-1][1]
