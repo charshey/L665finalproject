@@ -15,7 +15,8 @@ path = "It-Bank/ACLData"
 
 testpath = "It-Bank/DevData"
 
-cues = ['seem','seems','seemed','rain','rains','raining','rained','snow','snows','snowing','snowed','easy','important','necessary']
+cues = [''] #uncomment this and comment the next line to "switch off" cue words as features
+#cues = ['seems','rain','rains','raining','rained','snow','snows','snowing','snowed','important','necessary']
 
 def read_in_ACLData(path):  # you can change the path, but this will read in all files in a folder. It returns 3 lists, one for each column
     answers = []
