@@ -11,7 +11,7 @@ from nltk.stem import WordNetLemmatizer
 
 lemmatizer = WordNetLemmatizer()
 path = "It-Bank/ACLData"
-nltk.download('punkt','averaged_perceptron_tagger')
+nltk.download('punkt')
 
 testpath = "It-Bank/DevData"
 
