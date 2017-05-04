@@ -76,7 +76,7 @@ def get_feat_vect(all_before_words, all_after_words, before_POS, after_POS, sent
     wrd_array = np.zeros([len(sentences), (len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS)+2)])
     print(wrd_array.shape)
     while j < len(sentences):  # this while loop finds all the different words before and after each instance of "it"
-        posn = int(positions[j])-1
+        posn = int(positions[j])
         sent = nltk.word_tokenize(sentences[j])
         sent_POS = nltk.pos_tag(sent)
         #print("posn-2: " + sent[posn-2] + " posn-1: " + sent[posn-1] + " posn: " + sent[posn] + " posn+1: " + sent[posn+1]) #I put this here just in case
