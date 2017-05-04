@@ -94,7 +94,7 @@ def extract_POS_bigrams(sentences, positions):
 
 def get_feat_vect(all_before_words, all_after_words, two_before, two_after, three_after, four_after, before_POS, after_POS, sentences, positions):
     j = 0
-    wrd_array = np.zeros([len(sentences), (len(all_before_words)+len(all_after_words)+len(two_before)+len(two_after)+len(before_POS)+len(after_POS)+2)])
+    wrd_array = np.zeros([len(sentences), (len(all_before_words)+len(all_after_words)+len(two_before)+len(two_after)+len(before_POS)+len(after_POS)+2+len(three_after)+len(four_after))])
     print(wrd_array.shape)
     while j < len(sentences):  # this while loop finds all the different words before and after each instance of "it"
         posn = int(positions[j])
