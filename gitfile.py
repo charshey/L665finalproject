@@ -48,7 +48,7 @@ def extract_wrd_bigrams(sentences, positions):
         if lemmatizer.lemmatize(sent[posn-1]) not in all_before_words:
             word_before = lemmatizer.lemmatize(sent[posn-1])
             all_before_words.append(word_before)
-        if sent[posn+1] not in all_after_words:
+        if lemmatizer.lemmatize(sent[posn+1]) not in all_after_words:
             word_after = lemmatizer.lemmatize(sent[posn+1])
             all_after_words.append(word_after)
 			
