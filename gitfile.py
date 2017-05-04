@@ -40,9 +40,9 @@ def extract_wrd_bigrams(sentences, positions):
         sent = sent.split(" ")
         sent[0] = 'BEGIN'
         sent.append('END')
-        print(sent)
-        print()
-        print(" posn: " + sent[posn]) #I put this here just in case
+        #print(sent)
+        #print()
+        #print(" posn: " + sent[posn]) #I put this here just in case
         if sent[posn-1] not in all_before_words:
             word_before = sent[posn-1]
             all_before_words.append(word_before)
@@ -79,7 +79,7 @@ def get_feat_vect(all_before_words, all_after_words, before_POS, after_POS, sent
         posn = int(positions[j])
         sent = nltk.word_tokenize(sentences[j])
         sent_POS = nltk.pos_tag(sent)
-        #print("posn-2: " + sent[posn-2] + " posn-1: " + sent[posn-1] + " posn: " + sent[posn] + " posn+1: " + sent[posn+1]) #I put this here just in case
+        print("posn-2: " + sent[posn-2] + " posn-1: " + sent[posn-1] + " posn: " + sent[posn] + " posn+1: " + sent[posn+1]) #I put this here just in case
         wrd_bf = sent[posn-1]
         wrd_af = sent[posn+1]
         pos_bf = sent_POS[posn-1][1]
@@ -87,7 +87,7 @@ def get_feat_vect(all_before_words, all_after_words, before_POS, after_POS, sent
         wrd_array[j][all_before_words.index(wrd_bf)] = 1
         wrd_array[j][(len(all_before_words)+all_after_words.index(wrd_af))] = 1
         wrd_array[j][(len(all_after_words)+len(all_after_words)+before_POS.index(pos_bf))] = 1
-        wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+after_POS.index(pos_af))]=1
+        wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+after_POS.index(pos_af))] = 1
         wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))] = posn
         wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))+1] = len(sent)
 
