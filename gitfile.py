@@ -121,7 +121,7 @@ feature_vector = get_feat_vect(before_words,after_words,before_POS, after_POS, s
 #Z = np.array(testanswers)
 
 Y = np.array(answers)  # This np array is now ready to be used in the classifier. That's all we need to do to it
-clf = svm.LinearSVC(C=1)
+clf = svm.LinearSVC()
 clf.fit(feature_vector[:1700], Y[:1700])
 print(clf.predict(feature_vector[1700:]))
 
