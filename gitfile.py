@@ -11,7 +11,7 @@ from nltk.stem import WordNetLemmatizer
 
 lemmatizer = WordNetLemmatizer()
 path = "It-Bank/ACLData"
-nltk.download('punkt')
+nltk.download('punkt','averaged_perceptron_tagger')
 
 testpath = "It-Bank/DevData"
 
@@ -59,12 +59,12 @@ def extract_POS_bigrams(sentences, positions):
     all_before_POS = []
     all_after_POS = []
     while i < len(sentences):
-        posn = int(positions[i])-1
+        posn = int(positions[i])
         sent_tok = nltk.word_tokenize(sentences[i])
         sent_POS = nltk.pos_tag(sent_tok)
         if posn > 1 and sent_POS[(posn-1)][1] not in all_before_POS:
             all_before_POS.append(sent_POS[(posn-1)][1])
-        if posn < len(sent_POS) and sent_POS[(posn+1)][1] not in all_after_POS:
+        if posn < len(sent_POS)-1 and sent_POS[(posn+1)][1] not in all_after_POS:
             all_after_POS.append(sent_POS[posn+1][1])
         i += 1
     return all_before_POS, all_after_POS
