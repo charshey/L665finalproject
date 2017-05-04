@@ -37,6 +37,8 @@ def extract_wrd_bigrams(sentences, positions):
     i = 0
     all_before_words = []  # list of words preceding it. I was going to make it a tuple, but the second part would always be "it" so that seemed silly
     all_after_words = []
+    two_before = []
+    two_after = []
     while i < len(sentences):  # this while loop finds all the different words before and after eacn instance of "it"
         posn = int(positions[i])
         sent = sentences[i].lower()
@@ -52,9 +54,17 @@ def extract_wrd_bigrams(sentences, positions):
         if lemmatizer.lemmatize(sent[posn+1]) not in all_after_words:
             word_after = lemmatizer.lemmatize(sent[posn+1])
             all_after_words.append(word_after)
+        if posn > 2 and lemmatizer.lemmatize(sent[posn-2]) not in all_before_words:
+            word_before = lemmatizer.lemmatize(sent[posn-2])
+            all_before_words.append(word_before)
+        if posn < len(sent)-3 and lemmatizer.lemmatize(sent[posn+2]) not in all_after_words:
+            word_after = lemmatizer.lemmatize(sent[posn+2])
+            all_after_words.append(word_after)
+
+
 			
         i += 1
-    return all_before_words,all_after_words
+    return all_before_words,all_after_words,two_before,two_after
 
 
 def extract_POS_bigrams(sentences, positions):
@@ -70,14 +80,14 @@ def extract_POS_bigrams(sentences, positions):
         sent_POS = nltk.pos_tag(sent)
         if posn > 1 and sent_POS[(posn-1)][1] not in all_before_POS:
             all_before_POS.append(sent_POS[(posn-1)][1])
-        if posn < len(sent_POS)-1 and sent_POS[(posn+1)][1] not in all_after_POS:
+        if posn < len(sent_POS)-2 and sent_POS[(posn+1)][1] not in all_after_POS:
             all_after_POS.append(sent_POS[posn+1][1])
         i += 1
     return all_before_POS, all_after_POS
 
-def get_feat_vect(all_before_words, all_after_words, before_POS, after_POS, sentences, positions):
+def get_feat_vect(all_before_words, all_after_words, two_before, two_after, before_POS, after_POS, sentences, positions):
     j = 0
-    wrd_array = np.zeros([len(sentences), (len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS)+2)+len(cues)])
+    wrd_array = np.zeros([len(sentences), (len(all_before_words)+len(all_after_words)+len(two_before)+len(two_after)+len(before_POS)+len(after_POS)+2)])
     print(wrd_array.shape)
     while j < len(sentences):  # this while loop finds all the different words before and after each instance of "it"
         posn = int(positions[j])
@@ -89,8 +99,14 @@ def get_feat_vect(all_before_words, all_after_words, before_POS, after_POS, sent
         
         wrd_bf = sent[posn-1]
         wrd_af = sent[posn+1]
-        pos_bf = sent_POS[posn-1][1]
-        pos_af = sent_POS[posn+1][1]
+        if posn > 1: 
+            pos_bf = sent_POS[posn-1][1]
+        if posn < len(sent) -2:
+            pos_af = sent_POS[posn+1][1]
+        if posn > 2:
+            twobf = sent[posn-2]
+        if posn < len(sent) - 3:
+            twoaf = sent[posn+2]
         if wrd_bf in all_before_words:
             wrd_array[j][all_before_words.index(wrd_bf)] = 1
         if wrd_af in all_after_words:
@@ -101,20 +117,20 @@ def get_feat_vect(all_before_words, all_after_words, before_POS, after_POS, sent
             wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+after_POS.index(pos_af))] = 1
         wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))] = posn
         wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))+1] = len(sent)
-        for k in range(len(cues)):
-            if(cues[k] in sent): 
-                wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))+2+k] = 1 
-		
+        if twobf in two_before:
+            wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))+2+two_before.index(twobf)] = 1
+        if twoaf in two_after:
+            wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))+2+len(two_before)+two_after.index(twoaf)] = 1
         j += 1
     return wrd_array
            
 answers, positions, sentences = read_in_ACLData(path) # self-explanatory
 #print(len(answers))
-before_words,after_words = extract_wrd_bigrams(sentences, positions) # get bag (bags) of words
+before_words,after_words, two_before, two_after = extract_wrd_bigrams(sentences, positions) # get bag (bags) of words
 before_POS, after_POS = extract_POS_bigrams(sentences, positions)
 #print(before_words)
 #print(after_words)
-feature_vector = get_feat_vect(before_words,after_words,before_POS, after_POS, sentences, positions) # use bag of words and sentences to get feature vectors
+feature_vector = get_feat_vect(before_words,after_words,two_before, two_after,before_POS, after_POS, sentences, positions) # use bag of words and sentences to get feature vectors
 # print(wrd_bg_ft[0])
 # print(len(answers)) #these are just little check-ins. change as needed
 # print(len(positions))
