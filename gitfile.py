@@ -37,8 +37,10 @@ def extract_wrd_bigrams(sentences, positions):
     i = 0
     all_before_words = []  # list of words preceding it. I was going to make it a tuple, but the second part would always be "it" so that seemed silly
     all_after_words = []
-    two_before = []
-    two_after = []
+    all_two_before = []
+    all_two_after = []
+    all_three_after = []
+    all_four_after = []
     while i < len(sentences):  # this while loop finds all the different words before and after eacn instance of "it"
         posn = int(positions[i])
         sent = sentences[i].lower()
@@ -54,17 +56,22 @@ def extract_wrd_bigrams(sentences, positions):
         if lemmatizer.lemmatize(sent[posn+1]) not in all_after_words:
             word_after = lemmatizer.lemmatize(sent[posn+1])
             all_after_words.append(word_after)
-        if posn > 2 and lemmatizer.lemmatize(sent[posn-2]) not in all_before_words:
+        if posn > 2 and lemmatizer.lemmatize(sent[posn-2]) not in all_two_before:
             word_before = lemmatizer.lemmatize(sent[posn-2])
-            all_before_words.append(word_before)
-        if posn < len(sent)-3 and lemmatizer.lemmatize(sent[posn+2]) not in all_after_words:
-            word_after = lemmatizer.lemmatize(sent[posn+2])
-            all_after_words.append(word_after)
-
+            all_two_before.append(word_before)
+        if posn < len(sent)-3 and lemmatizer.lemmatize(sent[posn+2]) not in all_two_after:
+            word2_after = lemmatizer.lemmatize(sent[posn+2])
+            all_two_after.append(word2_after)
+        if posn < len(sent)-4 and lemmatizer.lemmatize(sent[posn+3]) not in all_three_after:
+            word3_after = lemmatizer.lemmatize(sent[posn+3])
+            all_three_after.append(word3_after)
+        if posn < len(sent)-5 and lemmatizer.lemmatize(sent[posn+4]) not in all_four_after:
+            word4_after = lemmatizer.lemmatize(sent[posn+4])
+            all_four_after.append(word4_after)
 
 			
         i += 1
-    return all_before_words,all_after_words,two_before,two_after
+    return all_before_words, all_after_words, all_two_before, all_two_after, all_three_after, all_four_after
 
 
 def extract_POS_bigrams(sentences, positions):
@@ -85,7 +92,7 @@ def extract_POS_bigrams(sentences, positions):
         i += 1
     return all_before_POS, all_after_POS
 
-def get_feat_vect(all_before_words, all_after_words, two_before, two_after, before_POS, after_POS, sentences, positions):
+def get_feat_vect(all_before_words, all_after_words, two_before, two_after, three_after, four_after, before_POS, after_POS, sentences, positions):
     j = 0
     wrd_array = np.zeros([len(sentences), (len(all_before_words)+len(all_after_words)+len(two_before)+len(two_after)+len(before_POS)+len(after_POS)+2)])
     print(wrd_array.shape)
@@ -107,6 +114,10 @@ def get_feat_vect(all_before_words, all_after_words, two_before, two_after, befo
             twobf = sent[posn-2]
         if posn < len(sent) - 3:
             twoaf = sent[posn+2]
+        if posn < len(sent) - 4:
+            threeaf = sent[posn+3]
+        if posn <len(sent) - 5:
+            fouraf = sent[posn+4]
         if wrd_bf in all_before_words:
             wrd_array[j][all_before_words.index(wrd_bf)] = 1
         if wrd_af in all_after_words:
@@ -121,16 +132,20 @@ def get_feat_vect(all_before_words, all_after_words, two_before, two_after, befo
             wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))+2+two_before.index(twobf)] = 1
         if twoaf in two_after:
             wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))+2+len(two_before)+two_after.index(twoaf)] = 1
+        if threeaf in three_after:
+            wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))+2+len(two_before)+len(two_after)+three_after.index(threeaf)] = 1
+        if fouraf in four_after:
+            wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))+2+len(two_before)+len(two_after)+len(three_after)+four_after.index(fouraf)] = 1
         j += 1
     return wrd_array
            
 answers, positions, sentences = read_in_ACLData(path) # self-explanatory
 #print(len(answers))
-before_words,after_words, two_before, two_after = extract_wrd_bigrams(sentences, positions) # get bag (bags) of words
+before_words,after_words, two_before, two_after, three_after, four_after = extract_wrd_bigrams(sentences, positions) # get bag (bags) of words
 before_POS, after_POS = extract_POS_bigrams(sentences, positions)
 #print(before_words)
 #print(after_words)
-feature_vector = get_feat_vect(before_words,after_words,two_before, two_after,before_POS, after_POS, sentences, positions) # use bag of words and sentences to get feature vectors
+feature_vector = get_feat_vect(before_words, after_words, two_before, two_after, three_after, four_after, before_POS, after_POS, sentences, positions) # use bag of words and sentences to get feature vectors
 # print(wrd_bg_ft[0])
 # print(len(answers)) #these are just little check-ins. change as needed
 # print(len(positions))
@@ -143,7 +158,7 @@ feature_vector = get_feat_vect(before_words,after_words,two_before, two_after,be
 #Z = np.array(testanswers)
 
 Y = np.array(answers)  # This np array is now ready to be used in the classifier. That's all we need to do to it
-clf = svm.LinearSVC()
+clf = svm.LinearSVC(C=1)
 clf.fit(feature_vector[:1700], Y[:1700])
 print(clf.predict(feature_vector[1700:]))
 
