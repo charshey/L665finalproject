@@ -2,6 +2,7 @@
 
 import os
 import csv
+import string
 from sklearn import svm
 from sklearn.metrics import precision_score, recall_score, f1_score
 import numpy as np
@@ -9,10 +10,10 @@ import nltk
 from nltk.stem import WordNetLemmatizer
 
 lemmatizer = WordNetLemmatizer()
-path = "C:/Users/ihovl/Documents/applied ml/It-Bank/It-Bank/ACLData"
-#nltk.download('punkt')
+path = "It-Bank/ACLData"
+nltk.download('punkt')
 
-testpath = "C:/Users/ihovl/Documents/applied ml/It-Bank/It-Bank/DevData"
+testpath = "It-Bank/DevData"
 
 def read_in_ACLData(path):  # you can change the path, but this will read in all files in a folder. It returns 3 lists, one for each column
     answers = []
@@ -35,9 +36,11 @@ def extract_wrd_bigrams(sentences, positions):
     all_after_words = []
     while i < len(sentences):  # this while loop finds all the different words before and after eacn instance of "it"
         posn = int(positions[i])-1
-        sent = nltk.word_tokenize(sentences[i])
-        #print(sent)
-        #print("posn-2: " + sent[posn-2] + " posn-1: " + sent[posn-1] + " posn: " + sent[posn] + " posn+1: " + sent[posn+1]) #I put this here just in case
+        sent = sentences[i].lower()
+        sent = sent.split(" ")
+        print(sent)
+        print()
+        print(" posn: " + sent[posn]) #I put this here just in case
         if sent[posn-1] not in all_before_words:
             word_before = sent[posn-1]
             all_before_words.append(word_before)
