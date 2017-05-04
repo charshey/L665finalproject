@@ -11,7 +11,7 @@ from nltk.stem import WordNetLemmatizer
 
 lemmatizer = WordNetLemmatizer()
 path = "It-Bank/ACLData"
-nltk.download('punkt')
+#nltk.download('punkt')
 
 testpath = "It-Bank/DevData"
 
@@ -85,7 +85,7 @@ def get_feat_vect(all_before_words, all_after_words, before_POS, after_POS, sent
         sent[0] = 'BEGIN'
         sent.append('END')
         sent_POS = nltk.pos_tag(sent)
-        print("posn-2: " + sent[posn-2] + " posn-1: " + sent[posn-1] + " posn: " + sent[posn] + " posn+1: " + sent[posn+1]) #I put this here just in case
+        #print("posn-2: " + sent[posn-2] + " posn-1: " + sent[posn-1] + " posn: " + sent[posn] + " posn+1: " + sent[posn+1]) #I put this here just in case
         wrd_bf = sent[posn-1]
         wrd_af = sent[posn+1]
         pos_bf = sent_POS[posn-1][1]
@@ -109,13 +109,6 @@ before_POS, after_POS = extract_POS_bigrams(sentences, positions)
 #print(before_words)
 #print(after_words)
 feature_vector = get_feat_vect(before_words,after_words,before_POS, after_POS, sentences, positions) # use bag of words and sentences to get feature vectors
-
-
-
-
-
-
-
 # print(wrd_bg_ft[0])
 # print(len(answers)) #these are just little check-ins. change as needed
 # print(len(positions))
@@ -128,15 +121,16 @@ feature_vector = get_feat_vect(before_words,after_words,before_POS, after_POS, s
 #Z = np.array(testanswers)
 
 Y = np.array(answers)  # This np array is now ready to be used in the classifier. That's all we need to do to it
-clf = svm.LinearSVC()
+clf = svm.LinearSVC(C=1)
 clf.fit(feature_vector[:1700], Y[:1700])
 print(clf.predict(feature_vector[1700:]))
 
 
-# Scoring idk how precision and recall work soo figure that out later
+# Scoring
 print(clf.score(feature_vector[1700:], Y[1700:]))
-#print(precision_score(clf.predict(test_feature_vector), Z, labels=['0', '1'], average='micro'))
-#print(recall_score(clf.predict(test_feature_vector), Z, labels=['0', '1'], average='micro'))
-#print(Z)
+print(precision_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
+print(recall_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
+print(f1_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
+
 
 
