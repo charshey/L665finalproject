@@ -35,9 +35,11 @@ def extract_wrd_bigrams(sentences, positions):
     all_before_words = []  # list of words preceding it. I was going to make it a tuple, but the second part would always be "it" so that seemed silly
     all_after_words = []
     while i < len(sentences):  # this while loop finds all the different words before and after eacn instance of "it"
-        posn = int(positions[i])-1
+        posn = int(positions[i])
         sent = sentences[i].lower()
         sent = sent.split(" ")
+        sent[0] = 'BEGIN'
+        sent.append('END')
         print(sent)
         print()
         print(" posn: " + sent[posn]) #I put this here just in case
