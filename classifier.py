@@ -14,6 +14,8 @@ path = "It-Bank/ACLData"
 
 testpath = "It-Bank/DevData"
 
+cues_array =['']
+
 def read_in_ACLData(path):  # you can change the path, but this will read in all files in a folder. It returns 3 lists, one for each column
     answers = []
     positions = []

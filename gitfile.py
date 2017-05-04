@@ -15,6 +15,8 @@ path = "It-Bank/ACLData"
 
 testpath = "It-Bank/DevData"
 
+cues = ['seem','seems','seemed','rain','rains','raining','rained','snow','snows','snowing','snowed','easy','important','necessary']
+
 def read_in_ACLData(path):  # you can change the path, but this will read in all files in a folder. It returns 3 lists, one for each column
     answers = []
     positions = []
@@ -43,11 +45,11 @@ def extract_wrd_bigrams(sentences, positions):
         #print(sent)
         #print()
         #print(" posn: " + sent[posn]) #I put this here just in case
-        if sent[posn-1] not in all_before_words:
-            word_before = sent[posn-1]
+        if lemmatizer.lemmatize(sent[posn-1]) not in all_before_words:
+            word_before = lemmatizer.lemmatize(sent[posn-1])
             all_before_words.append(word_before)
         if sent[posn+1] not in all_after_words:
-            word_after = sent[posn+1]
+            word_after = lemmatizer.lemmatize(sent[posn+1])
             all_after_words.append(word_after)
 			
         i += 1
@@ -72,11 +74,9 @@ def extract_POS_bigrams(sentences, positions):
         i += 1
     return all_before_POS, all_after_POS
 
-
-
 def get_feat_vect(all_before_words, all_after_words, before_POS, after_POS, sentences, positions):
     j = 0
-    wrd_array = np.zeros([len(sentences), (len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS)+2)])
+    wrd_array = np.zeros([len(sentences), (len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS)+2)+len(cues)])
     print(wrd_array.shape)
     while j < len(sentences):  # this while loop finds all the different words before and after each instance of "it"
         posn = int(positions[j])
@@ -85,19 +85,20 @@ def get_feat_vect(all_before_words, all_after_words, before_POS, after_POS, sent
         sent[0] = 'BEGIN'
         sent.append('END')
         sent_POS = nltk.pos_tag(sent)
-        #print("posn-2: " + sent[posn-2] + " posn-1: " + sent[posn-1] + " posn: " + sent[posn] + " posn+1: " + sent[posn+1]) #I put this here just in case
+        
         wrd_bf = sent[posn-1]
         wrd_af = sent[posn+1]
         pos_bf = sent_POS[posn-1][1]
         pos_af = sent_POS[posn+1][1]
         wrd_array[j][all_before_words.index(wrd_bf)] = 1
         wrd_array[j][(len(all_before_words)+all_after_words.index(wrd_af))] = 1
-        wrd_array[j][(len(all_after_words)+len(all_after_words)+before_POS.index(pos_bf))] = 1
+        wrd_array[j][(len(all_before_words)+len(all_after_words)+before_POS.index(pos_bf))] = 1
         wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+after_POS.index(pos_af))] = 1
         wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))] = posn
         wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))+1] = len(sent)
-
-		
+        for k in range(len(cues)):
+            if(cues[k] in sent): 
+                wrd_array[j][(len(all_before_words)+len(all_after_words)+len(before_POS)+len(after_POS))+2+k] = 1 
 		
         j += 1
     return wrd_array
