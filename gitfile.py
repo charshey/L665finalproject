@@ -11,7 +11,7 @@ from nltk.stem import WordNetLemmatizer
 
 lemmatizer = WordNetLemmatizer()
 path = "It-Bank/ACLData"
-#nltk.download('punkt','averaged_perceptron_tagger')
+#nltk.download('punkt')
 
 testpath = "It-Bank/DevData"
 
@@ -110,13 +110,6 @@ before_POS, after_POS = extract_POS_bigrams(sentences, positions)
 #print(before_words)
 #print(after_words)
 feature_vector = get_feat_vect(before_words,after_words,before_POS, after_POS, sentences, positions) # use bag of words and sentences to get feature vectors
-
-
-
-
-
-
-
 # print(wrd_bg_ft[0])
 # print(len(answers)) #these are just little check-ins. change as needed
 # print(len(positions))
@@ -134,10 +127,11 @@ clf.fit(feature_vector[:1700], Y[:1700])
 print(clf.predict(feature_vector[1700:]))
 
 
-# Scoring idk how precision and recall work soo figure that out later
+# Scoring
 print(clf.score(feature_vector[1700:], Y[1700:]))
-#print(precision_score(clf.predict(test_feature_vector), Z, labels=['0', '1'], average='micro'))
-#print(recall_score(clf.predict(test_feature_vector), Z, labels=['0', '1'], average='micro'))
-#print(Z)
+print(precision_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
+print(recall_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
+print(f1_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
+
 
 
