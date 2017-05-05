@@ -160,7 +160,7 @@ feature_vector = get_feat_vect(before_words, after_words, two_before, two_after,
 #Z = np.array(testanswers)
 
 Y = np.array(answers)  # This np array is now ready to be used in the classifier. That's all we need to do to it
-clf = svm.LinearSVC(C=1)
+clf = svm.LinearSVC()
 clf.fit(feature_vector[:1700], Y[:1700])
 gnb = GaussianNB()
 gnb.fit(feature_vector[:1700], Y[:1700])
@@ -168,21 +168,25 @@ bnb = BernoulliNB()
 bnb.fit(feature_vector[:1700], Y[:1700])
 
 print("SVM Scores")
-print("Accuracy: ", clf.score(feature_vector[1700:], Y[1700:]))
-print("Precision: ", precision_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
-print("Recall: ", recall_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
-print("F-Score: ", f1_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
+print("Accuracy: ", round(clf.score(feature_vector[1700:], Y[1700:]),5))
+print("Precision: ", round(precision_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'), 5))
+print("Recall: ", round(recall_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'), 5))
+print("F-Score: ", round(f1_score(clf.predict(feature_vector), Y, labels=['0', '1'], average='macro'), 5))
+
+
+
+'''
 print('\n')
 print("Gaussian Naive Bayes Scores")
-print("Accuracy: ", gnb.score(feature_vector[1700:], Y[1700:]))
-print("Precision: ", precision_score(gnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
-print("Recall: ", recall_score(gnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
-print("F-Score: ", f1_score(gnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
+print("Accuracy: ", round(gnb.score(feature_vector[1700:], Y[1700:]),5))
+print("Precision: ", round(precision_score(gnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'), 5))
+print("Recall: ", round(recall_score(gnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'), 5))
+print("F-Score: ", round(f1_score(gnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'), 5))
 print('\n')
 print("Bernoulli Naive Bayes Scores")
-print("Accuracy: ", bnb.score(feature_vector[1700:], Y[1700:]))
-print("Precision: ", precision_score(bnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
-print("Recall: ", recall_score(bnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
-print("F-Score: ", f1_score(bnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'))
-
+print("Accuracy: ", round(bnb.score(feature_vector[1700:], Y[1700:]),5))
+print("Precision: ", round(precision_score(bnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'), 5))
+print("Recall: ", round(recall_score(bnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'), 5))
+print("F-Score: ", round(f1_score(bnb.predict(feature_vector), Y, labels=['0', '1'], average='macro'), 5))
+'''
 
